@@ -1,1 +1,1 @@
-pip install Flask Flask-SQLAlchemy Flask-Migrate python-dotenv pymysql
+pip install Flask Flask-SQLAlchemy python-dotenv pymysql
