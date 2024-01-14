@@ -65,6 +65,8 @@ class AccuracyData(db.Model):
 class PlayerData(db.Model):
     play_id = db.Column(db.Integer, primary_key=True)
     total = db.Column(db.Integer)
+    total_top = db.Column(db.Integer)
+    total_bottom = db.Column(db.Integer)
     perfect_frame = db.Column(db.Integer)
     awesome_frame = db.Column(db.Integer)
     good_frame = db.Column(db.Integer)
@@ -76,6 +78,8 @@ class PlayerData(db.Model):
         return {
             'play_id': self.play_id,
             'total': self.total,
+            'total_top': self.total_top,
+            'total_bottom': self.total_bottom,
             'perfect_frame': self.perfect_frame,
             'awesome_frame': self.awesome_frame,
             'good_frame': self.good_frame,
