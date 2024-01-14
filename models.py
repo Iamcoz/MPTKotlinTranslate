@@ -59,7 +59,7 @@ class AccuracyData(db.Model):
         return {
             'play_id': self.play_id,
             'capture_time': self.capture_time,
-            'accuracy': self.accuracy,
+            'accuracy': self.accuracy
         }
 
 class PlayerData(db.Model):
