@@ -5,8 +5,11 @@ from models import Background, BasicData, Hand, AccuracyData, PlayerData, Progra
 # BackgroundData Routes
 @app.route('/api/BackgroundData', methods=['GET'])
 def get_background_data():
-    data = Background.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = Background.query.order_by(Background.user_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
 
 @app.route('/api/BackgroundData', methods=['POST'])
 def add_background_data():
@@ -19,8 +22,11 @@ def add_background_data():
 # BasicData Routes
 @app.route('/api/BasicData', methods=['GET'])
 def get_basic_data():
-    data = BasicData.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = BasicData.query.order_by(BasicData.play_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
 
 @app.route('/api/BasicData', methods=['POST'])
 def add_basic_data():
@@ -33,8 +39,11 @@ def add_basic_data():
 # HandData Routes
 @app.route('/api/HandData', methods=['GET'])
 def get_hand_data():
-    data = Hand.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = Hand.query.order_by(Hand.hand_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
 
 @app.route('/api/HandData', methods=['POST'])
 def add_hand_data():
@@ -58,8 +67,12 @@ def update_hand_data(hand_id):
 # AccuracyData Routes
 @app.route('/api/AccuracyData', methods=['GET'])
 def get_accuracy_data():
-    data = AccuracyData.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = AccuracyData.query.order_by(AccuracyData.play_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
+
 
 @app.route('/api/AccuracyData', methods=['POST'])
 def add_accuracy_data():
@@ -72,8 +85,12 @@ def add_accuracy_data():
 # PlayerData Routes
 @app.route('/api/PlayerData', methods=['GET'])
 def get_player_data():
-    data = PlayerData.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = PlayerData.query.order_by(PlayerData.play_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
+
 
 @app.route('/api/PlayerData', methods=['POST'])
 def add_player_data():
@@ -86,8 +103,12 @@ def add_player_data():
 # ProgramData Routes
 @app.route('/api/ProgramData', methods=['GET'])
 def get_program_data():
-    data = ProgramData.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = ProgramData.query.order_by(ProgramData.program_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
+
 
 @app.route('/api/ProgramData', methods=['POST'])
 def add_program_data():
@@ -106,8 +127,12 @@ def delete_all_program_data():
 # TwoPlayerData Routes
 @app.route('/api/TwoPlayerData', methods=['GET'])
 def get_two_player_data():
-    data = TwoPlayer.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = TwoPlayer.query.order_by(TwoPlayer.play_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
+
 
 @app.route('/api/TwoPlayerData', methods=['POST'])
 def add_two_player_data():
@@ -120,8 +145,12 @@ def add_two_player_data():
 # TwoPlayerFinalData Routes
 @app.route('/api/TwoPlayerFinalData', methods=['GET'])
 def get_two_player_final_data():
-    data = TwoPlayerFinal.query.all()
-    return jsonify([d.to_dict() for d in data]), 200
+    latest_data = TwoPlayerFinal.query.order_by(TwoPlayerFinal.play_id.desc()).first()
+    if latest_data:
+        return jsonify(latest_data.to_dict()), 200
+    else:
+        return jsonify({"message": "No data available"}), 404
+
 
 @app.route('/api/TwoPlayerFinalData', methods=['POST'])
 def add_two_player_final_data():
