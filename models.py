@@ -2,7 +2,7 @@ from app import db
 
 class Background(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
-    is_vr = db.Column(db.Boolean, default=False)
+    is_vr = db.Column(db.Integer, default=False)
     bg_name = db.Column(db.String(255))
     coord_name = db.Column(db.String(255))
 
