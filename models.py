@@ -54,16 +54,12 @@ class AccuracyData(db.Model):
     play_id = db.Column(db.Integer, primary_key=True)
     capture_time = db.Column(db.Integer)
     accuracy = db.Column(db.Integer)
-    testone = db.Column(db.Integer)
-    testtwo = db.Column(db.Integer)
 
     def to_dict(self):
         return {
             'play_id': self.play_id,
             'capture_time': self.capture_time,
             'accuracy': self.accuracy,
-            'testone': self.testone,
-            'testtwo': self.testtwo
         }
 
 class PlayerData(db.Model):
@@ -90,7 +86,7 @@ class PlayerData(db.Model):
 
 class ProgramData(db.Model):
     program_id = db.Column(db.Integer, primary_key=True)
-    is_running = db.Column(db.Boolean)
+    is_running = db.Column(db.Integer)
 
     def to_dict(self):
         return {
