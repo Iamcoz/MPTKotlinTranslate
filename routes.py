@@ -105,9 +105,14 @@ def add_player_data():
 def get_program_data():
     latest_data = ProgramData.query.order_by(ProgramData.program_id.desc()).first()
     if latest_data:
-        return jsonify(latest_data.to_dict()), 200
+        response = jsonify(latest_data.to_dict()), 200
+        # 모든 데이터 삭제
+        ProgramData.query.delete()
+        db.session.commit()
+        return response
     else:
         return jsonify({"message": "No data available"}), 404
+
 
 
 @app.route('/api/ProgramData', methods=['POST'])
