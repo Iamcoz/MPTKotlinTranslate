@@ -159,3 +159,26 @@ def add_two_player_final_data():
     db.session.add(new_data)
     db.session.commit()
     return jsonify(new_data.to_dict()), 201
+
+# 기초체력 상위 퍼센테이지 산출
+@app.route('/api/BasicData/<int:play_id>/update_rating', methods=['PUT'])
+def update_basic_rating(play_id):
+    basic_data = BasicData.query.get_or_404(play_id)
+
+    columns = ['reaction_time', 'on_air', 'squat_jump', 'knee_punch', 'balance_test']
+    for column in columns:
+        value = getattr(basic_data, column)
+        if value and value > 0:
+            # 해당 컬럼에서의 유효한 값들의 수와 현재 값보다 작은 값들의 수를 가져옴
+            total_count = BasicData.query.filter(
+                getattr(BasicData, column) > 0).count()
+            lower_count = BasicData.query.filter(
+                getattr(BasicData, column) > 0,
+                getattr(BasicData, column) < value).count()
+            # 퍼센트 순위 계산
+            percentile_rank = (lower_count / total_count) * 100
+            basic_data.basic_rating = round(percentile_rank)
+            break
+
+    db.session.commit()
+    return jsonify(basic_data.to_dict()), 200
