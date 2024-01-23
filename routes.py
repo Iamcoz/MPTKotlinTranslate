@@ -172,12 +172,16 @@ def update_basic_rating(play_id):
             # 모든 유효한 값 가져오기
             all_values = [getattr(record, column) for record in BasicData.query.filter(
                 getattr(BasicData, column) > 0).all()]
-            
-            # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
-            count_less_than_or_equal = sum(1 for val in all_values if val <= value)
 
-            # 퍼센트 순위 계산 (주어진 값보다 작은 값들의 비율)
-            percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
+            if len(all_values) == 1:
+                # 유효한 값이 하나만 있는 경우는 상위 1%로 처리
+                percentile_rank = 1
+            else:
+                # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
+                count_less_than_or_equal = sum(1 for val in all_values if val <= value)
+                # 퍼센트 순위 계산
+                percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
+
             basic_data.basic_rating = round(percentile_rank)
             break
 
