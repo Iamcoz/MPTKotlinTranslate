@@ -160,7 +160,7 @@ def add_two_player_final_data():
     db.session.commit()
     return jsonify(new_data.to_dict()), 201
 
-# 기초체력 상위 퍼센테이지 산출
+# 기초체력 상위 퍼센테이지 산출 및 컬럼 update
 @app.route('/api/BasicData/<int:play_id>/update_rating', methods=['PUT'])
 def update_basic_rating(play_id):
     basic_data = BasicData.query.get_or_404(play_id)
@@ -169,14 +169,15 @@ def update_basic_rating(play_id):
     for column in columns:
         value = getattr(basic_data, column)
         if value and value > 0:
-            # 해당 컬럼에서의 유효한 값들의 수와 현재 값보다 작은 값들의 수를 가져옴
-            total_count = BasicData.query.filter(
-                getattr(BasicData, column) > 0).count()
-            lower_count = BasicData.query.filter(
-                getattr(BasicData, column) > 0,
-                getattr(BasicData, column) < value).count()
-            # 퍼센트 순위 계산
-            percentile_rank = (lower_count / total_count) * 100
+            # 모든 유효한 값 가져오기
+            all_values = [getattr(record, column) for record in BasicData.query.filter(
+                getattr(BasicData, column) > 0).all()]
+            
+            # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
+            count_less_than_or_equal = sum(1 for val in all_values if val <= value)
+
+            # 퍼센트 순위 계산 (주어진 값보다 작은 값들의 비율)
+            percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
             basic_data.basic_rating = round(percentile_rank)
             break
 
