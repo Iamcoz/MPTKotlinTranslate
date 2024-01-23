@@ -31,7 +31,7 @@ def get_basic_data():
         return jsonify({"message": "No data available"}), 404
 
 @app.route('/api/BasicData/<int:play_id>', methods=['GET'])
-def get_basic_data(play_id):
+def get_basic_data_by_play_id(play_id):
     basic_data = BasicData.query.get_or_404(play_id)
     return jsonify(basic_data.to_dict()), 200
 
