@@ -6,11 +6,16 @@ from models import Background, BasicData, Hand, AccuracyData, PlayerData, Progra
 # BackgroundData Routes
 @app.route('/api/BackgroundData', methods=['GET'])
 def get_background_data():
-    latest_data = Background.query.order_by(Background.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = Background.query.filter_by(znickname=nickname).order_by(Background.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400    # 닉네임 없을 경우
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
-        return jsonify({"message": "No data available"}), 404
+        return jsonify({"message": "No data available"}), 404   # Data 없을 경우
 
 @app.route('/api/BackgroundData', methods=['POST'])
 def add_background_data():
@@ -24,16 +29,16 @@ def add_background_data():
 # BasicData Routes
 @app.route('/api/BasicData', methods=['GET'])
 def get_basic_data():
-    latest_data = BasicData.query.order_by(BasicData.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
         return jsonify({"message": "No data available"}), 404
-
-@app.route('/api/BasicData/<int:row_number>', methods=['GET'])
-def get_basic_data_by_row_number(row_number):
-    basic_data = BasicData.query.get_or_404(row_number)
-    return jsonify(basic_data.to_dict()), 200
 
 @app.route('/api/BasicData', methods=['POST'])
 def add_basic_data():
@@ -44,9 +49,9 @@ def add_basic_data():
     return jsonify(new_data.to_dict()), 201
 
 # 기초체력 상위 퍼센테이지 산출 및 컬럼 update
-@app.route('/api/BasicData/<int:row_number>/update_rating', methods=['PUT'])
-def update_basic_rating(row_number):
-    basic_data = BasicData.query.get_or_404(row_number)
+@app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
+def update_basic_rating(nickname):
+    basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 
     columns = ['reaction_time', 'on_air', 'squat_jump', 'knee_punch', 'balance_test']
     for column in columns:
@@ -75,7 +80,12 @@ def update_basic_rating(row_number):
 # HandData Routes
 @app.route('/api/HandData', methods=['GET'])
 def get_hand_data():
-    latest_data = Hand.query.order_by(Hand.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = Hand.query.filter_by(znickname=nickname).order_by(Hand.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
@@ -89,10 +99,10 @@ def add_hand_data():
     db.session.commit()
     return jsonify(new_data.to_dict()), 201
 
-@app.route('/api/HandData/<int:row_number>', methods=['PUT'])
-def update_hand_data(row_number):
+@app.route('/api/HandData/<string:nickname>', methods=['PUT'])
+def update_hand_data(nickname):
     data = request.json
-    hand_data = Hand.query.get_or_404(row_number)
+    hand_data = Hand.query.filter_by(znickname=nickname).order_by(Hand.zcreated_at.desc()).first_or_404()
     hand_data.rx = data.get('rx', hand_data.rx)
     hand_data.ry = data.get('ry', hand_data.ry)
     hand_data.lx = data.get('lx', hand_data.lx)
@@ -104,7 +114,12 @@ def update_hand_data(row_number):
 # AccuracyData Routes
 @app.route('/api/AccuracyData', methods=['GET'])
 def get_accuracy_data():
-    latest_data = AccuracyData.query.order_by(AccuracyData.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = AccuracyData.query.filter_by(znickname=nickname).order_by(AccuracyData.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
@@ -122,7 +137,12 @@ def add_accuracy_data():
 # PlayerData Routes
 @app.route('/api/PlayerData', methods=['GET'])
 def get_player_data():
-    latest_data = PlayerData.query.order_by(PlayerData.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = PlayerData.query.filter_by(znickname=nickname).order_by(PlayerData.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
@@ -140,7 +160,12 @@ def add_player_data():
 # ProgramData Routes
 @app.route('/api/ProgramData', methods=['GET'])
 def get_program_data():
-    latest_data = ProgramData.query.order_by(ProgramData.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = ProgramData.query.filter_by(znickname=nickname).order_by(ProgramData.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
@@ -164,7 +189,12 @@ def delete_all_program_data():
 # TwoPlayerData Routes
 @app.route('/api/TwoPlayerData', methods=['GET'])
 def get_two_player_data():
-    latest_data = TwoPlayer.query.order_by(TwoPlayer.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = TwoPlayer.query.filter_by(znickname=nickname).order_by(TwoPlayer.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
@@ -182,7 +212,12 @@ def add_two_player_data():
 # TwoPlayerFinalData Routes
 @app.route('/api/TwoPlayerFinalData', methods=['GET'])
 def get_two_player_final_data():
-    latest_data = TwoPlayerFinal.query.order_by(TwoPlayerFinal.row_number.desc()).first()
+    nickname = request.args.get('nickname')
+    if nickname:
+        latest_data = TwoPlayerFinal.query.filter_by(znickname=nickname).order_by(TwoPlayerFinal.row_number.desc()).first()
+    else:
+        return jsonify({"message": "No nickname provided"}), 400
+
     if latest_data:
         return jsonify(latest_data.to_dict()), 200
     else:
