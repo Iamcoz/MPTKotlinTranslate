@@ -102,7 +102,7 @@ def add_hand_data():
 @app.route('/api/HandData/<string:nickname>', methods=['PUT'])
 def update_hand_data(nickname):
     data = request.json
-    hand_data = Hand.query.filter_by(znickname=nickname).order_by(Hand.zcreated_at.desc()).first_or_404()
+    hand_data = Hand.query.filter_by(znickname=nickname).order_by(Hand.row_number.desc()).first_or_404()
     hand_data.rx = data.get('rx', hand_data.rx)
     hand_data.ry = data.get('ry', hand_data.ry)
     hand_data.lx = data.get('lx', hand_data.lx)
