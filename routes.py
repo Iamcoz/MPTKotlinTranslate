@@ -1,6 +1,6 @@
 from flask import request, jsonify
 from app import app, db
-from models import Background, BasicData, Hand, AccuracyData, PlayerData, ProgramData, TwoPlayer, TwoPlayerFinal
+from models import Background, BasicData, Hand, AccuracyData, PlayerData, ProgramData#, TwoPlayer, TwoPlayerFinal
 
 
 # BackgroundData Routes
@@ -56,11 +56,13 @@ def update_basic_rating(nickname):
     columns = ['reaction_time', 'on_air', 'squat_jump', 'knee_punch', 'balance_test']
     for column in columns:
         value = getattr(basic_data, column)
-        if value and value > 0:
-            # 모든 유효한 값 가져오기
-            all_values = [getattr(record, column) for record in BasicData.query.filter(
-                getattr(BasicData, column) > 0).all()]
+        # 모든 유효한 값 가져오기
+        all_values = [getattr(record, column) for record in BasicData.query.all()]
 
+        if value == 0:
+            # value가 0인 경우 상위 0%로 처리
+            percentile_rank = 0
+        elif value > 0:
             if len(all_values) == 1:
                 # 유효한 값이 하나만 있는 경우 상위 1%로 처리
                 percentile_rank = 1
@@ -69,12 +71,15 @@ def update_basic_rating(nickname):
                 count_less_than_or_equal = sum(1 for val in all_values if val <= value)
                 # 퍼센트 순위 계산
                 percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
+        else:
+            continue  # value가 음수인 경우는 처리하지 않음
 
-            basic_data.basic_rating = round(percentile_rank)
-            break
+        basic_data.basic_rating = round(percentile_rank)
+        break  # 첫 번째 유효한 컬럼에 대해 처리 후 루프 종료
 
     db.session.commit()
     return jsonify(basic_data.to_dict()), 200
+
 
 
 # HandData Routes
@@ -187,46 +192,46 @@ def delete_all_program_data():
 
 
 # TwoPlayerData Routes
-@app.route('/api/TwoPlayerData', methods=['GET'])
-def get_two_player_data():
-    nickname = request.args.get('nickname')
-    if nickname:
-        latest_data = TwoPlayer.query.filter_by(znickname=nickname).order_by(TwoPlayer.row_number.desc()).first()
-    else:
-        return jsonify({"message": "No nickname provided"}), 400
+# @app.route('/api/TwoPlayerData', methods=['GET'])
+# def get_two_player_data():
+#     nickname = request.args.get('nickname')
+#     if nickname:
+#         latest_data = TwoPlayer.query.filter_by(znickname=nickname).order_by(TwoPlayer.row_number.desc()).first()
+#     else:
+#         return jsonify({"message": "No nickname provided"}), 400
 
-    if latest_data:
-        return jsonify(latest_data.to_dict()), 200
-    else:
-        return jsonify({"message": "No data available"}), 404
+#     if latest_data:
+#         return jsonify(latest_data.to_dict()), 200
+#     else:
+#         return jsonify({"message": "No data available"}), 404
 
-@app.route('/api/TwoPlayerData', methods=['POST'])
-def add_two_player_data():
-    data = request.json
-    new_data = TwoPlayer(**data)
-    db.session.add(new_data)
-    db.session.commit()
-    return jsonify(new_data.to_dict()), 201
+# @app.route('/api/TwoPlayerData', methods=['POST'])
+# def add_two_player_data():
+#     data = request.json
+#     new_data = TwoPlayer(**data)
+#     db.session.add(new_data)
+#     db.session.commit()
+#     return jsonify(new_data.to_dict()), 201
 
 
-# TwoPlayerFinalData Routes
-@app.route('/api/TwoPlayerFinalData', methods=['GET'])
-def get_two_player_final_data():
-    nickname = request.args.get('nickname')
-    if nickname:
-        latest_data = TwoPlayerFinal.query.filter_by(znickname=nickname).order_by(TwoPlayerFinal.row_number.desc()).first()
-    else:
-        return jsonify({"message": "No nickname provided"}), 400
+# # TwoPlayerFinalData Routes
+# @app.route('/api/TwoPlayerFinalData', methods=['GET'])
+# def get_two_player_final_data():
+#     nickname = request.args.get('nickname')
+#     if nickname:
+#         latest_data = TwoPlayerFinal.query.filter_by(znickname=nickname).order_by(TwoPlayerFinal.row_number.desc()).first()
+#     else:
+#         return jsonify({"message": "No nickname provided"}), 400
 
-    if latest_data:
-        return jsonify(latest_data.to_dict()), 200
-    else:
-        return jsonify({"message": "No data available"}), 404
+#     if latest_data:
+#         return jsonify(latest_data.to_dict()), 200
+#     else:
+#         return jsonify({"message": "No data available"}), 404
 
-@app.route('/api/TwoPlayerFinalData', methods=['POST'])
-def add_two_player_final_data():
-    data = request.json
-    new_data = TwoPlayerFinal(**data)
-    db.session.add(new_data)
-    db.session.commit()
-    return jsonify(new_data.to_dict()), 201
+# @app.route('/api/TwoPlayerFinalData', methods=['POST'])
+# def add_two_player_final_data():
+#     data = request.json
+#     new_data = TwoPlayerFinal(**data)
+#     db.session.add(new_data)
+#     db.session.commit()
+#     return jsonify(new_data.to_dict()), 201
