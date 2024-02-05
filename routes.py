@@ -56,29 +56,30 @@ def update_basic_rating(nickname):
     columns = ['reaction_time', 'on_air', 'squat_jump', 'knee_punch', 'balance_test']
     for column in columns:
         value = getattr(basic_data, column)
-        if value is not None:
-            if value == 0:
-                # value가 0일 경우 상위 0%로 처리
-                basic_data.basic_rating = 0
+        # value가 0일 때 상위 퍼센테이지를 0%로 설정
+        if value == 0:
+            basic_data.basic_rating = 0
+            db.session.commit()
+            return jsonify(basic_data.to_dict()), 200
+        elif value > 0:
+            # 모든 유효한 값(0이 아닌 값) 가져오기
+            all_values = [getattr(record, column) for record in BasicData.query.filter(
+                getattr(BasicData, column) > 0).all()]
+            if len(all_values) == 1:
+                # 유효한 값이 하나만 있는 경우 상위 1%로 처리
+                percentile_rank = 1
             else:
-                # 모든 유효한 값(0이 아닌 값) 가져오기
-                all_values = [getattr(record, column) for record in BasicData.query.filter(
-                    getattr(BasicData, column) > 0).all()]
+                 # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
+                count_less_than_or_equal = sum(1 for val in all_values if val <= value)
+                # 퍼센트 순위 계산
+                percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
 
-                if len(all_values) == 1:
-                    # 유효한 값이 하나만 있는 경우 상위 1%로 처리
-                    percentile_rank = 1
-                else:
-                    # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
-                    count_less_than_or_equal = sum(1 for val in all_values if val <= value)
-                    # 퍼센트 순위 계산
-                    percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
-
-                basic_data.basic_rating = round(percentile_rank)
+            basic_data.basic_rating = round(percentile_rank)
             break
 
     db.session.commit()
     return jsonify(basic_data.to_dict()), 200
+
 
 
 
