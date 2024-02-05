@@ -122,56 +122,56 @@ class ProgramData(db.Model):
             'is_running': self.is_running
         }
 
-class TwoPlayer(db.Model):
-    row_number = db.Column(db.Integer, primary_key=True)
-    znickname = db.Column(db.String(255))
-    # zcreated_at = db.Column(db.TIMESTAMP)
-    capture_time = db.Column(db.Integer)
-    first_player = db.Column(db.Integer)
-    second_player = db.Column(db.Integer)
+# class TwoPlayer(db.Model):
+#     row_number = db.Column(db.Integer, primary_key=True)
+#     znickname = db.Column(db.String(255))
+#     # zcreated_at = db.Column(db.TIMESTAMP)
+#     capture_time = db.Column(db.Integer)
+#     first_player = db.Column(db.Integer)
+#     second_player = db.Column(db.Integer)
 
-    def to_dict(self):
-        return {
-            'row_number': self.row_number,
-            'znickname': self.znickname,
-            # 'zcreated_at': self.zcreated_at,
-            'capture_time': self.capture_time,
-            'first_player': self.first_player,
-            'second_player': self.second_player
-        }
+#     def to_dict(self):
+#         return {
+#             'row_number': self.row_number,
+#             'znickname': self.znickname,
+#             # 'zcreated_at': self.zcreated_at,
+#             'capture_time': self.capture_time,
+#             'first_player': self.first_player,
+#             'second_player': self.second_player
+#         }
 
-class TwoPlayerFinal(db.Model):
-    row_number = db.Column(db.Integer, primary_key=True)
-    znickname = db.Column(db.String(255))
-    # zcreated_at = db.Column(db.TIMESTAMP)
-    total_first = db.Column(db.Integer)
-    perfect_frame_first = db.Column(db.Integer)
-    awesome_frame_first = db.Column(db.Integer)
-    good_frame_first = db.Column(db.Integer)
-    ok_frame_first = db.Column(db.Integer)
-    bad_frame_first = db.Column(db.Integer)
-    total_second = db.Column(db.Integer)
-    perfect_frame_second = db.Column(db.Integer)
-    awesome_frame_second = db.Column(db.Integer)
-    good_frame_second = db.Column(db.Integer)
-    ok_frame_second = db.Column(db.Integer)
-    bad_frame_second = db.Column(db.Integer)
+# class TwoPlayerFinal(db.Model):
+#     row_number = db.Column(db.Integer, primary_key=True)
+#     znickname = db.Column(db.String(255))
+#     # zcreated_at = db.Column(db.TIMESTAMP)
+#     total_first = db.Column(db.Integer)
+#     perfect_frame_first = db.Column(db.Integer)
+#     awesome_frame_first = db.Column(db.Integer)
+#     good_frame_first = db.Column(db.Integer)
+#     ok_frame_first = db.Column(db.Integer)
+#     bad_frame_first = db.Column(db.Integer)
+#     total_second = db.Column(db.Integer)
+#     perfect_frame_second = db.Column(db.Integer)
+#     awesome_frame_second = db.Column(db.Integer)
+#     good_frame_second = db.Column(db.Integer)
+#     ok_frame_second = db.Column(db.Integer)
+#     bad_frame_second = db.Column(db.Integer)
 
-    def to_dict(self):
-        return {
-            'row_number': self.row_number,
-            'znickname': self.znickname,
-            # 'zcreated_at': self.zcreated_at,
-            'total_first': self.total_first,
-            'perfect_frame_first': self.perfect_frame_first,
-            'awesome_frame_first': self.awesome_frame_first,
-            'good_frame_first': self.good_frame_first,
-            'ok_frame_first': self.ok_frame_first,
-            'bad_frame_first': self.bad_frame_first,
-            'total_second': self.total_second,
-            'perfect_frame_second': self.perfect_frame_second,
-            'awesome_frame_second': self.awesome_frame_second,
-            'good_frame_second': self.good_frame_second,
-            'ok_frame_second': self.ok_frame_second,
-            'bad_frame_second': self.bad_frame_second
-        }
+#     def to_dict(self):
+#         return {
+#             'row_number': self.row_number,
+#             'znickname': self.znickname,
+#             # 'zcreated_at': self.zcreated_at,
+#             'total_first': self.total_first,
+#             'perfect_frame_first': self.perfect_frame_first,
+#             'awesome_frame_first': self.awesome_frame_first,
+#             'good_frame_first': self.good_frame_first,
+#             'ok_frame_first': self.ok_frame_first,
+#             'bad_frame_first': self.bad_frame_first,
+#             'total_second': self.total_second,
+#             'perfect_frame_second': self.perfect_frame_second,
+#             'awesome_frame_second': self.awesome_frame_second,
+#             'good_frame_second': self.good_frame_second,
+#             'ok_frame_second': self.ok_frame_second,
+#             'bad_frame_second': self.bad_frame_second
+#         }
