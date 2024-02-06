@@ -64,17 +64,16 @@ def update_basic_rating(nickname):
         if dynamic_value == 0:
             basic_data.basic_rating = 0
         else:
-            percentile_rank = 0
-            if len(all_values) > 1:
-                sorted_values = sorted(all_values)
-                rank = sorted_values.index(dynamic_value) + 1
-                percentile_rank = (rank / len(all_values)) * 100
-                print(f"Percentile Rank for {dynamic_column}: {percentile_rank}")  # 중간 값 출력
+            all_values_sorted = sorted(all_values, reverse=True)  # 높은 값부터 정렬
+            rank = all_values_sorted.index(dynamic_value) + 1
+            percentile_rank = (len(all_values) - rank + 1) / len(all_values) * 100
+            print(f"Percentile Rank for {dynamic_column}: {percentile_rank}")  # 중간 값 출력
 
             basic_data.basic_rating = round(percentile_rank)
             db.session.commit()
 
     return jsonify(basic_data.to_dict()), 200
+
 
 
 # HandData Routes
