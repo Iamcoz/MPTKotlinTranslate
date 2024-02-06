@@ -51,32 +51,31 @@ def add_basic_data():
 @app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
 def update_basic_rating(nickname):
     data = request.json
-    dynamic_column = data.get("dynamic_column")  # 클라이언트에서 전송한 동적 컬럼명 받기
+    dynamic_column = data.get("dynamic_column")
     basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 
-    # 동적 컬럼명이 전달된 경우 해당 컬럼만 처리
     if dynamic_column:
         dynamic_value = getattr(basic_data, dynamic_column, None)
+        print(f"Dynamic Value for {dynamic_column}: {dynamic_value}")  # 중간 값 출력
+
+        all_values = [getattr(record, dynamic_column) for record in BasicData.query.filter(getattr(BasicData, dynamic_column) > 0).all()]
+        print(f"All Values for {dynamic_column}: {all_values}")  # 중간 값 출력
+
         if dynamic_value == 0:
             basic_data.basic_rating = 0
         else:
-            # 0이 아닌 경우 상위 퍼센테이지 계산 로직
-            all_values = [getattr(record, dynamic_column) for record in BasicData.query.filter(getattr(BasicData, dynamic_column) > 0).all()]
-            if len(all_values) == 1:
-                # 유효한 값이 하나만 있는 경우 상위 1%로 처리
-                percentile_rank = 1
-            else:
-                # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
-                count_less_than_or_equal = sum(1 for val in all_values if val <= dynamic_value)
-                # 퍼센트 순위 계산
-                percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
+            percentile_rank = 0
+            if len(all_values) > 1:
+                sorted_values = sorted(all_values)
+                rank = sorted_values.index(dynamic_value) + 1
+                percentile_rank = (rank / len(all_values)) * 100
+                print(f"Percentile Rank for {dynamic_column}: {percentile_rank}")  # 중간 값 출력
 
             basic_data.basic_rating = round(percentile_rank)
             db.session.commit()
-            return jsonify(basic_data.to_dict()), 200
 
-    db.session.commit()
     return jsonify(basic_data.to_dict()), 200
+
 
 # HandData Routes
 @app.route('/api/HandData', methods=['GET'])
