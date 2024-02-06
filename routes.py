@@ -75,7 +75,8 @@ def update_basic_rating(nickname):
                 percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
 
             basic_data.basic_rating = round(percentile_rank)
-            break
+            db.session.commit()
+            return jsonify(basic_data.to_dict()), 200
 
     db.session.commit()
     return jsonify(basic_data.to_dict()), 200
