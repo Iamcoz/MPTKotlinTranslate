@@ -1,6 +1,8 @@
 from flask import request, jsonify
 from app import app, db
 from models import Background, BasicData, Hand, AccuracyData, PlayerData, ProgramData#, TwoPlayer, TwoPlayerFinal
+import logging
+
 
 
 # BackgroundData Routes
@@ -54,23 +56,26 @@ def update_basic_rating(nickname):
     dynamic_column = data.get("dynamic_column")
     basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 
+    logging.debug(f"Received request to update {dynamic_column} rating for {nickname}")
+
     if dynamic_column:
         dynamic_value = getattr(basic_data, dynamic_column, None)
-        print(f"Dynamic Value for {dynamic_column}: {dynamic_value}")  # 중간 값 출력
+        logging.debug(f"Dynamic Value for {dynamic_column}: {dynamic_value}")
 
         all_values = [getattr(record, dynamic_column) for record in BasicData.query.filter(getattr(BasicData, dynamic_column) > 0).all()]
-        print(f"All Values for {dynamic_column}: {all_values}")  # 중간 값 출력
+        logging.debug(f"All Values for {dynamic_column}: {all_values}")
 
         if dynamic_value == 0:
             basic_data.basic_rating = 0
         else:
-            all_values_sorted = sorted(all_values, reverse=True)  # 높은 값부터 정렬
+            all_values_sorted = sorted(all_values, reverse=True)
             rank = all_values_sorted.index(dynamic_value) + 1
             percentile_rank = (len(all_values) - rank + 1) / len(all_values) * 100
-            print(f"Percentile Rank for {dynamic_column}: {percentile_rank}")  # 중간 값 출력
+            logging.debug(f"Percentile Rank for {dynamic_column}: {percentile_rank}")
 
             basic_data.basic_rating = round(percentile_rank)
             db.session.commit()
+            logging.debug(f"Updated basic_rating to {basic_data.basic_rating} for {nickname}")
 
     return jsonify(basic_data.to_dict()), 200
 
