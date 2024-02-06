@@ -52,18 +52,17 @@ def add_basic_data():
 # 기초체력 상위 퍼센테이지 산출 및 컬럼 update
 @app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
 def update_basic_rating(nickname):
-    # data = request.get_json()
-    data = request.json
+    data = request.get_json()
     if not data or 'dynamic_column' not in data:
         return jsonify({"error": "Missing required data"}), 400
 
-    dynamic_column = data['dynamic_column']
+    dynamic_column = data.get("dynamic_column")
+
     # 해당 컬럼이 BasicData 모델에 존재하는지 확인
     if not hasattr(BasicData, dynamic_column):
         return jsonify({"error": "Invalid dynamic_column"}), 400
     
     logging.debug(f"Received PUT request data: {data}")  # 요청 받은 데이터 로그
-    dynamic_column = data.get("dynamic_column")
     basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 
     logging.debug(f"Received request to update {dynamic_column} rating for {nickname}")
@@ -88,6 +87,7 @@ def update_basic_rating(nickname):
             logging.debug(f"Updated basic_rating to {basic_data.basic_rating} for {nickname}")
 
     return jsonify(basic_data.to_dict()), 200
+
 
 
 

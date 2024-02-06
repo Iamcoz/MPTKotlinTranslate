@@ -21,7 +21,6 @@ class Background(db.Model):
 class BasicData(db.Model):
     row_number = db.Column(db.Integer, primary_key=True)
     znickname = db.Column(db.String(255))
-    # zcreated_at = db.Column(db.TIMESTAMP)
     reaction_time = db.Column(db.Float)
     on_air = db.Column(db.Float)
     squat_jump = db.Column(db.Integer)
@@ -33,7 +32,6 @@ class BasicData(db.Model):
         return {
             'row_number': self.row_number,
             'znickname': self.znickname,
-            # 'zcreated_at': self.zcreated_at,
             'reaction_time': self.reaction_time,
             'on_air': self.on_air,
             'squat_jump': self.squat_jump,
