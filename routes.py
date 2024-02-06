@@ -74,7 +74,7 @@ def update_basic_rating(nickname):
         all_values = [getattr(record, dynamic_column) for record in BasicData.query.filter(getattr(BasicData, dynamic_column) > 0).all()]
         logging.debug(f"All Values for {dynamic_column}: {all_values}")
 
-        if dynamic_value == 0:
+        if dynamic_value == 0 or dynamic_value == 0.0:
             basic_data.basic_rating = 0
         else:
             all_values_sorted = sorted(all_values, reverse=True)
