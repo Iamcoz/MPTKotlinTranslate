@@ -53,6 +53,7 @@ def add_basic_data():
 @app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
 def update_basic_rating(nickname):
     data = request.json
+    logging.debug(f"Received PUT request data: {data}")  # 요청 받은 데이터 로그
     dynamic_column = data.get("dynamic_column")
     basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 

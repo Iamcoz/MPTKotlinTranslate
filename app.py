@@ -7,7 +7,6 @@ import logging
 logging.basicConfig(filename='app.log', level=logging.DEBUG,
                     format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
-
 load_dotenv()  # 환경 변수 로드
 
 app = Flask(__name__)
