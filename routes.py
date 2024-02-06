@@ -25,7 +25,6 @@ def add_background_data():
     db.session.commit()
     return jsonify(new_data.to_dict()), 201
 
-
 # BasicData Routes
 @app.route('/api/BasicData', methods=['GET'])
 def get_basic_data():
@@ -51,26 +50,24 @@ def add_basic_data():
 # 기초체력 상위 퍼센테이지 산출 및 컬럼 update
 @app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
 def update_basic_rating(nickname):
+    data = request.json
+    dynamic_column = data.get("dynamic_column")  # 클라이언트에서 전송한 동적 컬럼명 받기
     basic_data = BasicData.query.filter_by(znickname=nickname).order_by(BasicData.row_number.desc()).first_or_404()
 
-    columns = ['reaction_time', 'on_air', 'squat_jump', 'knee_punch', 'balance_test']
-    for column in columns:
-        value = getattr(basic_data, column)
-        # value가 0일 때 상위 퍼센테이지를 0%로 설정
-        if value == 0:
+    # 동적 컬럼명이 전달된 경우 해당 컬럼만 처리
+    if dynamic_column:
+        dynamic_value = getattr(basic_data, dynamic_column, None)
+        if dynamic_value == 0:
             basic_data.basic_rating = 0
-            db.session.commit()
-            return jsonify(basic_data.to_dict()), 200
-        elif value > 0:
-            # 모든 유효한 값(0이 아닌 값) 가져오기
-            all_values = [getattr(record, column) for record in BasicData.query.filter(
-                getattr(BasicData, column) > 0).all()]
+        else:
+            # 0이 아닌 경우 상위 퍼센테이지 계산 로직
+            all_values = [getattr(record, dynamic_column) for record in BasicData.query.filter(getattr(BasicData, dynamic_column) > 0).all()]
             if len(all_values) == 1:
                 # 유효한 값이 하나만 있는 경우 상위 1%로 처리
                 percentile_rank = 1
             else:
-                 # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
-                count_less_than_or_equal = sum(1 for val in all_values if val <= value)
+                # 값이 주어진 값보다 작거나 같은 경우의 개수 계산
+                count_less_than_or_equal = sum(1 for val in all_values if val <= dynamic_value)
                 # 퍼센트 순위 계산
                 percentile_rank = ((count_less_than_or_equal - 1) / len(all_values)) * 100
 
@@ -80,10 +77,6 @@ def update_basic_rating(nickname):
 
     db.session.commit()
     return jsonify(basic_data.to_dict()), 200
-
-
-
-
 
 # HandData Routes
 @app.route('/api/HandData', methods=['GET'])
