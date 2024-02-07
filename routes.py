@@ -54,7 +54,7 @@ def add_basic_data():
 # 기초체력 상위 퍼센테이지 산출 및 컬럼 update
 @app.route('/api/BasicData/<string:nickname>/update_rating', methods=['PUT'])
 def update_basic_rating(nickname):
-    data = request.get_json()
+    data = request.json
     if not data or 'dynamic_column' not in data:
         return jsonify({"error": "Missing required data"}), 400
 
