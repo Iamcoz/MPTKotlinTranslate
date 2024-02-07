@@ -2,6 +2,7 @@ from flask import request, jsonify
 from app import app, db
 from models import Background, BasicData, Hand, AccuracyData, PlayerData, ProgramData#, TwoPlayer, TwoPlayerFinal
 import logging
+import json
 
 
 
@@ -44,7 +45,8 @@ def get_basic_data():
 @app.route('/api/BasicData', methods=['POST'])
 def add_basic_data():
     data = request.json
-    new_data = BasicData(**data)
+    data_dict = json.loads(data)
+    new_data = BasicData(**data_dict)
     db.session.add(new_data)
     db.session.commit()
     return jsonify(new_data.to_dict()), 201
@@ -87,8 +89,6 @@ def update_basic_rating(nickname):
             logging.debug(f"Updated basic_rating to {basic_data.basic_rating} for {nickname}")
 
     return jsonify(basic_data.to_dict()), 200
-
-
 
 
 # HandData Routes
