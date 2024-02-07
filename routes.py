@@ -57,8 +57,10 @@ def update_basic_rating(nickname):
     data = request.json
     if not data or 'dynamic_column' not in data:
         return jsonify({"error": "Missing required data"}), 400
-
-    dynamic_column = data.get('dynamic_column')
+    # logging.debug(f"Received PUT request data: {data}")  # 요청 받은 데이터 로그
+    
+    data = json.loads(data)
+    dynamic_column = data['dynamic_column']
 
     # 해당 컬럼이 BasicData 모델에 존재하는지 확인
     if not hasattr(BasicData, dynamic_column):
